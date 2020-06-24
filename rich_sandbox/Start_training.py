@@ -21,9 +21,7 @@ torch.manual_seed(manualSeed)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 dataroot = "data/wikiartsmall"
-model_name = '200_features_cont'
-modfile_G = r'Results\200_features\generator.pyt'
-modfile_D = r'Results\200_features\discriminator.pyt'
+model_name = '200_features'
 
 workers = 0  # Number of workers for dataloader
 batch_size = 64  # Batch size during training
@@ -32,7 +30,7 @@ nc = 3  # Number of channels in the training images. For color images this is 3
 nz = 200  # Size of z latent vector (i.e. size of generator input)
 ngf = 64  # Size of feature maps in generator
 ndf = 64  # Size of feature maps in discriminator
-num_epochs = 5  # Number of training epochs
+num_epochs = 7  # Number of training epochs
 lr = 0.0002  # Learning rate for optimizers
 beta1 = 0.5  # Beta1 hyperparam for Adam optimizers
 ngpu = 1  # Number of GPUs available. Use 0 for CPU mode.
@@ -54,10 +52,12 @@ dataset = dset.ImageFolder(root=dataroot,
 dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,shuffle=True, num_workers=workers)
 device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
 
-netG = torch.load(modfile_G)
+netG = Generator(ngpu, nz, ngf, nc).to(device)  # Create the generator
+netG.apply(weights_init)  # Apply the weights_init function to randomly initialize all weights to mean=0, stdev=0.2.
 print(netG)
 
-netD = torch.load(modfile_D)
+netD = Discriminator(ngpu, ndf, nc).to(device)  # Create the Discriminator
+netD.apply(weights_init)  # Apply the weights_init function to randomly initialize all weights to mean=0, stdev=0.2.
 print(netD)
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
