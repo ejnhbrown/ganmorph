@@ -14,7 +14,7 @@ modfile = r'Results\128_10Ep_onwards\generator.pyt'
 
 
 netG = Generator(ngpu)
-netG = load(modfile)
+netG = load(modfile, map_location=lambda storage, loc: storage)
 #netG.load_state_dict(load(modfile))
 
 print(1)
